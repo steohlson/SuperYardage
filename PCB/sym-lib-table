@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "SuperyardageLib")(type "KiCad")(uri "${KIPRJMOD}/SuperyardageLib/SuperyardageLib.kicad_sym")(options "")(descr ""))
+)
