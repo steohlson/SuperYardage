@@ -85,7 +85,7 @@ class Joystick:
         print("Zeroed")
         print("Now Tuning Scaling")
 
-        for i in range(1000):
+        for i in range(500):
             self.TuneScaling()
             time.sleep(.01)
         print("Done")
@@ -178,21 +178,33 @@ class Joystick:
         if(x > 0):
             x /= self.maxX
         else:
-            x /= self.minX
+            x /= -self.minX
 
 
-        x = clamp(x, -1, 1)
+        #Apply Deadband
+        #Essentially take absolute value, apply deadband, then undo absolute value
 
-        if(x > 0):
-            if(x < self.deadband):
-                x = 0
-            else:
-                x = (x - self.deadband) / (1 - self.deadband)
+        isNegative = (x < 0)
+
+        if(isNegative):
+            x *= -1
+
+
+        if(x < self.deadband):
+            x = 0.0
+        elif( x > 1 - self.deadband):
+            x = 1.0
         else:
-            if(x > self.deadband):
-                x = 0
-            else:
-                x = (x + self.deadband) / (-1 + self.deadband)
+            x = (x - self.deadband) / (1 - 2 * self.deadband)
+
+
+        if(isNegative):
+            x *= -1
+
+
+        x = clamp(x, -1.0, 1.0)
+        
+
 
         
         return x
@@ -208,7 +220,7 @@ class Joystick:
         if(y > 0):
             y /= self.maxY
         else:
-            y /= self.minY
+            y /= -self.minY
         
         #Apply Deadband
         #Essentially take absolute value, apply deadband, then undo absolute value
@@ -220,9 +232,9 @@ class Joystick:
 
 
         if(y < self.deadband):
-            y = 0
+            y = 0.0
         elif( y > 1 - self.deadband):
-            y = 1
+            y = 1.0
         else:
             y = (y - self.deadband) / (1 - 2 * self.deadband)
 
@@ -231,9 +243,10 @@ class Joystick:
             y *= -1
 
 
-        y = clamp(y, -1, 1)
+        y = clamp(y, -1.0, 1.0)
 
-        
+        print(y)
+
         return y
 
 
