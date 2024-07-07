@@ -1,0 +1,2 @@
+class Setting(Option):
+    pass

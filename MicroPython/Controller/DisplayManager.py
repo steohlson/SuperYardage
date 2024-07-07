@@ -1,57 +1,57 @@
+import machine
 from machine import Pin
 import time
+import InputManager
 
-#Use firmware from this repository to use driver
+#Use firmware from this repository to use the following libraries
 #https://github.com/russhughes/st7789_mpy
-import st7789
+import st7789 # type: ignore
+import vga1_16x32 as font1 # type: ignore
 
 
-import vga1_16x32 as font1
-
-
-
-
-width=170
-height=320
+#other pins
 res=12
 dc=13
 
-class DisplayManager:
-    
-   
-
-    def _init_(self, SPI, CS):
-        global csPin
-        global spi
-        global display
 
 
-        csPin = Pin(CS, Pin.OUT)
-        self.spi = SPI
 
-        csPin.value(0)
+class display_manager:
+
+    width=170
+    height=320
+
+    Display : st7789.ST7789
+    csPin : Pin
+    inputManager : InputManager.input_manager
+
+    def __init__(self, SPI : machine.SPI, CSPIN : Pin, inputManager : InputManager.input_manager) -> None:
+        self.csPin = CSPIN
+        self.inputManager = inputManager
+
+        self.csPin.value(0)
         
-        display = st7789.ST7789(spi=spi, width=width, height=height, reset=Pin(res, Pin.OUT), dc=Pin(dc, Pin.OUT), rotation=45)
-        display.init()
+        self.Display = st7789.ST7789(spi=SPI, width=self.width, height=self.height, reset=Pin(res, Pin.OUT), dc=Pin(dc, Pin.OUT), rotation=45)
+        self.Display.init()
         
-        display.jpg("ControllerLoadingScreen.jpg", 0, 0, st7789.SLOW)
+        self.Display.jpg("ControllerLoadingScreen.jpg", 0, 0, st7789.SLOW)
 
         time.sleep(2)
+        self.Display.fill(st7789.BLACK)
 
-        csPin.value(1)
+        self.csPin.value(1)
 
+    
 
-
-    def updateDisplay(self):
+    def Update(self, cpuTemp):
+        temp = str(cpuTemp) + " C"
+        self.csPin.value(0)
+        #self.Display.fill(st7789.BLACK)
+        self.Display.text(font1,"CPU temp: ", 0, 0)
         
-        csPin.value(0)
-        display.fill(st7789.BLACK)
-        display.text(font1,"CPU temp: ", 0, 0)
+        self.Display.text(font1, temp, 144, 0)
+        self.csPin.value(1)
         
-
-        display.text(font1, str(6.3) + " C", 144, 0)
-        csPin.value(1)
-        time.sleep(.1)
 
 
 
