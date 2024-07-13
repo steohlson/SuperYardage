@@ -177,7 +177,8 @@
         }
       ],
       "track_widths": [
-        0.0
+        0.0,
+        0.3
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -529,7 +530,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "DrillFiles/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
